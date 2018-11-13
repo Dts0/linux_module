@@ -2,6 +2,7 @@ obj-m := mem_mod.o
 
 KERNEL_DIR := ../headers/linux-headers-4.15.0-38-generic
 PWD := $(shell pwd)
+MEMDEV_NO :=  $(shell cat /proc/devices | grep mem_dev | awk '{print ($$1)}')
 
 all:
 	make -C $(KERNEL_DIR) SUBDIRS=$(PWD) modules
@@ -15,7 +16,7 @@ cat_devs:
 	cat /proc/devices | grep mem_dev
 test:
 	#查找mem_dev的设备号 并为其构造结点
-	sudo mknod /dev/memdev0 c $(cat /proc/devices | grep mem_dev | awk '{print $1}') 0
+	sudo mknod /dev/memdev0 c $(MEMDEV_NO) 0
 	#允许读写
 	sudo chmod 666 /dev/memdev0
 	#查看/dev中的memdev结点
